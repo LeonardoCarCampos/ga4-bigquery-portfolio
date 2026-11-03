@@ -1,0 +1,33 @@
+name: ga4_portfolio
+version: "1.0.0"
+config-version: 2
+profile: ga4_portfolio
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  # Period of the public dataset (date-sharded tables events_YYYYMMDD).
+  # Override for cheap iterations, e.g.:
+  #   dbt build --vars '{"start_date": "20210101", "end_date": "20210131"}'
+  start_date: "20201101"
+  end_date: "20210131"
+  # Timezone used to derive session_date and event_date_local. In this dataset event_date equals the
+  # UTC date of event_timestamp (see sql/exploration/06), so UTC keeps daily numbers reconcilable.
+  timezone: "UTC"
+
+models:
+  ga4_portfolio:
+    staging:
+      +materialized: table
+      +schema: silver
+    intermediate:
+      +materialized: table
+      +schema: silver
+    marts:
+      +materialized: table
+      +schema: gold

@@ -1,0 +1,5 @@
+# Only needed for scripts/make_charts.py (README images)
+google-cloud-bigquery>=3.0
+db-dtypes>=1.0
+pandas>=2.0
+matplotlib>=3.7

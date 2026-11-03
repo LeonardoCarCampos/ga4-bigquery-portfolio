@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: fct_funnel_daily
+    description: Daily purchase funnel by device, counted in sessions (open and closed funnel) plus integrity counters.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [session_date, device_category]
+
+  - name: fct_funnel_overall
+    description: Closed funnel for the whole period with step-to-step conversion.
+    columns:
+      - name: step
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_step_duration
+    description: Percentiles of seconds between consecutive funnel steps, by device and overall.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [device_category, step]
+
+  - name: fct_search_conversion
+    description: Conversion of sessions that used internal search vs sessions that did not.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [session_date, used_search]
+
+  - name: fct_search_terms
+    description: Internal search terms with volume and purchase rate of the sessions that searched them.
+    columns:
+      - name: search_term
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_acquisition
+    description: Monthly sessions and conversion by first-user source/medium and device.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [session_month, first_user_source, first_user_medium, device_category]
+
+  - name: fct_retention_weekly
+    description: Weekly retention by cohort of first observed session.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [cohort_week, weeks_since_first]
+
+  - name: dq_events_daily
+    description: Data-quality counters per day and event_name.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [event_date, event_name]

@@ -1,0 +1,15 @@
+# Copy to ~/.dbt/profiles.yml and replace YOUR_GCP_PROJECT_ID.
+# The public dataset lives in the US multi-region, so your dataset MUST be in US too.
+ga4_portfolio:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth                  # uses: gcloud auth application-default login
+      project: YOUR_GCP_PROJECT_ID
+      dataset: ga4_portfolio         # models land in ga4_portfolio_silver / ga4_portfolio_gold
+      location: US
+      threads: 4
+      priority: interactive
+      job_execution_timeout_seconds: 600
+      maximum_bytes_billed: 20000000000   # safety cap: any query above ~20 GB fails instead of billing

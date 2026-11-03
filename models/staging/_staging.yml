@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: stg_ga4__events
+    description: >
+      Silver layer. One row per GA4 event with event_params flattened into columns.
+      Clustered by event_name, user_pseudo_id (not partitioned, see docs/decisoes.md).
+    columns:
+      - name: event_key
+        description: Surrogate key = md5(user_pseudo_id, event_timestamp, event_name, dup_seq).
+        data_tests:
+          - unique
+          - not_null
+      - name: session_key
+        description: user_pseudo_id + ga_session_id. NULL when the event has no ga_session_id.
+      - name: event_date
+        description: Date from the export. In this dataset it equals the UTC date of event_timestamp (see sql/exploration/06).
+        data_tests:
+          - not_null
+      - name: event_date_local
+        description: Date of the UTC event_timestamp converted to var('timezone').
+      - name: event_ts
+        description: Event timestamp (UTC).
+        data_tests:
+          - not_null
+      - name: event_name
+        data_tests:
+          - not_null
+      - name: first_user_source
+        description: >
+          From traffic_source.source. In the GA4 export this is the user's FIRST acquisition source,
+          not the source of the current session.
+      - name: dup_seq
+        description: Sequence among events sharing (user_pseudo_id, event_timestamp, event_name). >1 means a collision.

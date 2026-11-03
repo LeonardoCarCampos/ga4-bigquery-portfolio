@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: int_ga4__sessions
+    description: >
+      One row per session built from ga_session_id. Holds first-occurrence timestamps for each
+      funnel step plus session attributes. Events without ga_session_id are excluded
+      (their volume is tracked in dq_events_daily).
+    columns:
+      - name: session_key
+        data_tests:
+          - unique
+          - not_null
+      - name: user_pseudo_id
+        data_tests:
+          - not_null
+      - name: session_date
+        description: Date of the first event of the session in var('timezone').
+        data_tests:
+          - not_null

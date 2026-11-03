@@ -1,0 +1,34 @@
+name: dbt-parse
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Write a dummy profile (parse never connects to BigQuery)
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml <<'PROFILE'
+          ga4_portfolio:
+            target: ci
+            outputs:
+              ci:
+                type: bigquery
+                method: oauth
+                project: ci-dummy-project
+                dataset: ga4_portfolio
+                location: US
+                threads: 1
+          PROFILE
+      - run: dbt deps
+      - name: Validate project (Jinja, refs, YAML, tests config)
+        run: dbt parse
