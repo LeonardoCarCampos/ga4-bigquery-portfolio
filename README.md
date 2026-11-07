@@ -88,8 +88,6 @@ Period 2020-11-01 to 2021-01-31: 4,295,584 events, 17 event types, 360,129 sessi
 - **No event id, no problem, but be explicit.** The surrogate key keeps colliding events instead of merging them, and the scorecard measures how often that happens.
 - **Define the metric before comparing tools.** Events vs sessions vs users, UTC vs property timezone, and open vs closed funnels can all explain a gap between two dashboards.
 - **A green test suite can still be an empty table.** In a BigQuery sandbox project, partitions expire after 60 days, so partitioning historical data by event date produced a table with zero rows while `unique` and `not_null` passed. Only the reconciliation test against the source caught it; the fix was to cluster instead of partition.
-- **A green test suite can still be an empty table.** In a BigQuery sandbox project, partitions expire after 60 days, so partitioning historical data by event date produced a table with zero rows while `unique` and `not_null` passed. Only the reconciliation test against the source caught it; the fix was to cluster instead of partition.
-- **A green test suite can still be an empty table.** In a BigQuery sandbox project, partitions expire after 60 days, so partitioning historical data by event date produced a table with zero rows while `unique` and `not_null` passed. Only the reconciliation test against the source caught it; the fix was to cluster instead of partition.
 
 ## Repository layout
 ```
